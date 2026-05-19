@@ -93,7 +93,7 @@ export default function ResultsScreen({ results, onReset }: Props) {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="text-center text-white/20 text-xs mt-6 no-print"
         >
-          מלמ תים · יום מנהלים · ניהול בעידן ה־AI
+          יום מנהלים · ניהול בעידן ה־AI
         </motion.p>
       </div>
 

@@ -87,7 +87,7 @@ export default function PrintSummary({ results }: Props) {
         })}
 
         <p style={{ fontSize: '10px', color: '#9ca3af', textAlign: 'center', marginTop: '16px' }}>
-          יום מנהלים | מלמ תים | ניהול בעידן ה־AI
+          יום מנהלים | ניהול בעידן ה־AI
         </p>
       </div>
     </div>

@@ -60,7 +60,7 @@ export default function IntroScreen({ onStart }: Props) {
               letterSpacing: '0.15em',
             }}
           >
-            מלמ תים · יום מנהלים
+            יום מנהלים
           </div>
         </motion.div>
 

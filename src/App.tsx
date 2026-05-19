@@ -3,10 +3,11 @@ import { motion } from 'framer-motion'
 import IntroScreen from './components/IntroScreen'
 import QuestionCard from './components/QuestionCard'
 import ResultsScreen from './components/ResultsScreen'
+import DimensionTransition from './components/DimensionTransition'
 import { calculateResults, isComplete, type SurveyResults } from './lib/scoring'
 import { STORAGE_KEY } from './data/surveyContent'
 
-type Screen = 'intro' | 'survey' | 'results'
+type Screen = 'intro' | 'survey' | 'dimension-transition' | 'results'
 
 interface SavedState {
   screen: Screen
@@ -74,13 +75,21 @@ export default function App() {
   }
 
   const handleNext = () => {
-    if (currentIndex < 9) {
+    if (currentIndex === 4) {
+      // After Q5 (last Human Leadership question) → show dimension transition
+      setScreen('dimension-transition')
+    } else if (currentIndex < 9) {
       setCurrentIndex((i) => i + 1)
     } else {
       const computed = calculateResults(answers)
       setResults(computed)
       setScreen('results')
     }
+  }
+
+  const handleDimensionContinue = () => {
+    setCurrentIndex(5)
+    setScreen('survey')
   }
 
   const handleBack = () => {
@@ -95,6 +104,14 @@ export default function App() {
     setCurrentIndex(0)
     setAnswers({})
     setResults(null)
+  }
+
+  if (screen === 'dimension-transition') {
+    return (
+      <motion.div key="transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}>
+        <DimensionTransition onContinue={handleDimensionContinue} />
+      </motion.div>
+    )
   }
 
   if (screen === 'survey') {
