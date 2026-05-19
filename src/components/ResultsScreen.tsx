@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import html2canvas from 'html2canvas'
 import type { SurveyResults } from '../lib/scoring'
 import DimensionResultCard from './DimensionResultCard'
 import PrintSummary from './PrintSummary'
@@ -23,6 +22,7 @@ export default function ResultsScreen({ results, onReset }: Props) {
     if (!exportRef.current || downloading) return
     setDownloading(true)
     try {
+      const { default: html2canvas } = await import('html2canvas')
       const canvas = await html2canvas(exportRef.current, {
         backgroundColor: '#05091a',
         scale: 2,
