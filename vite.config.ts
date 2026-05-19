@@ -5,7 +5,6 @@ export default defineConfig({
   plugins: [react()],
   base: '/malam-quest/',
   build: {
-    outDir: '.',
-    emptyOutDir: false,
+    outDir: 'docs',
   },
 })

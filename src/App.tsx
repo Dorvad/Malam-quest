@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import IntroScreen from './components/IntroScreen'
 import QuestionCard from './components/QuestionCard'
 import ResultsScreen from './components/ResultsScreen'
@@ -28,7 +27,7 @@ function saveState(state: SavedState) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
-    // Silently ignore storage errors
+    // ignore
   }
 }
 
@@ -36,7 +35,7 @@ function clearState() {
   try {
     localStorage.removeItem(STORAGE_KEY)
   } catch {
-    // Silently ignore storage errors
+    // ignore
   }
 }
 
@@ -46,7 +45,6 @@ export default function App() {
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [results, setResults] = useState<SurveyResults | null>(null)
 
-  // Restore saved state on mount
   useEffect(() => {
     const saved = loadState()
     if (saved) {
@@ -59,7 +57,6 @@ export default function App() {
     }
   }, [])
 
-  // Persist state on changes
   useEffect(() => {
     if (screen !== 'intro' || Object.keys(answers).length > 0) {
       saveState({ screen, currentIndex, answers })
@@ -99,49 +96,21 @@ export default function App() {
     setResults(null)
   }
 
-  return (
-    <AnimatePresence mode="wait">
-      {screen === 'intro' && (
-        <motion.div
-          key="intro"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <IntroScreen onStart={handleStart} />
-        </motion.div>
-      )}
+  if (screen === 'survey') {
+    return (
+      <QuestionCard
+        currentIndex={currentIndex}
+        answers={answers}
+        onAnswer={handleAnswer}
+        onNext={handleNext}
+        onBack={handleBack}
+      />
+    )
+  }
 
-      {screen === 'survey' && (
-        <motion.div
-          key="survey"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <QuestionCard
-            currentIndex={currentIndex}
-            answers={answers}
-            onAnswer={handleAnswer}
-            onNext={handleNext}
-            onBack={handleBack}
-          />
-        </motion.div>
-      )}
+  if (screen === 'results' && results) {
+    return <ResultsScreen results={results} onReset={handleReset} />
+  }
 
-      {screen === 'results' && results && (
-        <motion.div
-          key="results"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ResultsScreen results={results} onReset={handleReset} />
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
+  return <IntroScreen onStart={handleStart} />
 }

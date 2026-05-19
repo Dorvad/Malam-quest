@@ -6,11 +6,11 @@ interface Props {
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 16 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.08, ease: [0.4, 0, 0.2, 1] },
+    transition: { duration: 0.4, delay: i * 0.06, ease: [0.4, 0, 0.2, 1] },
   }),
 }
 
