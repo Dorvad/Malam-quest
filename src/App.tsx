@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import IntroScreen from './components/IntroScreen'
 import QuestionCard from './components/QuestionCard'
 import ResultsScreen from './components/ResultsScreen'
@@ -98,19 +99,29 @@ export default function App() {
 
   if (screen === 'survey') {
     return (
-      <QuestionCard
-        currentIndex={currentIndex}
-        answers={answers}
-        onAnswer={handleAnswer}
-        onNext={handleNext}
-        onBack={handleBack}
-      />
+      <motion.div key="survey" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+        <QuestionCard
+          currentIndex={currentIndex}
+          answers={answers}
+          onAnswer={handleAnswer}
+          onNext={handleNext}
+          onBack={handleBack}
+        />
+      </motion.div>
     )
   }
 
   if (screen === 'results' && results) {
-    return <ResultsScreen results={results} onReset={handleReset} />
+    return (
+      <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+        <ResultsScreen results={results} onReset={handleReset} />
+      </motion.div>
+    )
   }
 
-  return <IntroScreen onStart={handleStart} />
+  return (
+    <motion.div key="intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+      <IntroScreen onStart={handleStart} />
+    </motion.div>
+  )
 }
