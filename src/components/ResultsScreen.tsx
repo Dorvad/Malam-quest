@@ -1,7 +1,10 @@
+import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import html2canvas from 'html2canvas'
 import type { SurveyResults } from '../lib/scoring'
 import DimensionResultCard from './DimensionResultCard'
 import PrintSummary from './PrintSummary'
+import ExportCard from './ExportCard'
 
 interface Props {
   results: SurveyResults
@@ -9,8 +12,30 @@ interface Props {
 }
 
 export default function ResultsScreen({ results, onReset }: Props) {
+  const exportRef = useRef<HTMLDivElement>(null)
+  const [downloading, setDownloading] = useState(false)
+
   const handlePrint = () => {
     window.print()
+  }
+
+  const handleDownloadJpg = async () => {
+    if (!exportRef.current || downloading) return
+    setDownloading(true)
+    try {
+      const canvas = await html2canvas(exportRef.current, {
+        backgroundColor: '#05091a',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      })
+      const link = document.createElement('a')
+      link.download = 'תוצאות-שאלון-AI.jpg'
+      link.href = canvas.toDataURL('image/jpeg', 0.93)
+      link.click()
+    } finally {
+      setDownloading(false)
+    }
   }
 
   return (
@@ -69,12 +94,30 @@ export default function ResultsScreen({ results, onReset }: Props) {
           className="flex flex-col sm:flex-row gap-3 no-print"
         >
           <button
-            onClick={handlePrint}
+            onClick={handleDownloadJpg}
+            disabled={downloading}
             className="btn-primary flex-1 flex items-center justify-center gap-2 text-white"
+            aria-label="הורדת תוצאות כתמונה JPG"
+          >
+            {downloading ? (
+              <>
+                <span className="animate-spin text-sm">⏳</span>
+                <span>מייצר תמונה...</span>
+              </>
+            ) : (
+              <>
+                <span>📥</span>
+                <span>הורדה כ־JPG</span>
+              </>
+            )}
+          </button>
+          <button
+            onClick={handlePrint}
+            className="btn-secondary flex items-center justify-center gap-2"
             aria-label="שמירה כ-PDF או הדפסה"
           >
             <span>🖨️</span>
-            <span>שמירה כ־PDF / הדפסה</span>
+            <span>PDF / הדפסה</span>
           </button>
           <button
             onClick={onReset}
@@ -82,7 +125,7 @@ export default function ResultsScreen({ results, onReset }: Props) {
             aria-label="מילוי מחדש של השאלון"
           >
             <span>↺</span>
-            <span>מילוי מחדש</span>
+            <span>מחדש</span>
           </button>
         </motion.div>
 
@@ -99,6 +142,9 @@ export default function ResultsScreen({ results, onReset }: Props) {
 
       {/* Print-only version */}
       <PrintSummary results={results} />
+
+      {/* Off-screen export card for html2canvas */}
+      <ExportCard ref={exportRef} results={results} />
     </div>
   )
 }
