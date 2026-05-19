@@ -1,5 +1,8 @@
 node_modules
 dist
+assets/
+.nojekyll
+favicon.svg
 
 .env
 .env.local
