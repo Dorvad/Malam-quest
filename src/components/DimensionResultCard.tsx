@@ -18,7 +18,7 @@ const levelIcons: Record<string, string> = {
 }
 
 export default function DimensionResultCard({ result, index }: Props) {
-  const dim = dimensions.find((d) => d.id === result.dimension)!
+  const dim = dimensions.find((d) => d.id === result.dimension) ?? dimensions[0]
   const isHuman = result.dimension === 'human'
   const barRef = useRef<HTMLDivElement>(null)
 

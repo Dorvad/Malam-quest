@@ -14,13 +14,11 @@ export interface SurveyResults {
 }
 
 export function getScoreRange(score: number, dimension: Dimension): ScoreRange {
-  const dim = dimensions.find((d) => d.id === dimension)!
-  const range = dim.scoreRanges.find((r) => score >= r.min && score <= r.max)
-  return range ?? dim.scoreRanges[dim.scoreRanges.length - 1]
+  const dim = dimensions.find((d) => d.id === dimension) ?? dimensions[0]
+  return dim.scoreRanges.find((r) => score >= r.min && score <= r.max) ?? dim.scoreRanges[dim.scoreRanges.length - 1]
 }
 
 export function scoreToPercentage(score: number): number {
-  // Scale: min=5, max=25, so range is 20 points
   return Math.round(((score - 5) / 20) * 100)
 }
 

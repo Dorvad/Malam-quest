@@ -7,8 +7,7 @@ interface Props {
 
 export default function ProgressHeader({ currentIndex }: Props) {
   const total = questions.length
-  const progress = ((currentIndex) / total) * 100
-  const current = currentIndex + 1
+  const progressPct = ((currentIndex + 1) / total) * 100
 
   return (
     <div className="w-full px-4 pt-4 pb-2 no-print">
@@ -18,7 +17,7 @@ export default function ProgressHeader({ currentIndex }: Props) {
             שאלון הערכה עצמית
           </span>
           <span className="text-xs font-semibold text-white/60">
-            <span className="neon-text-magenta">{current}</span>
+            <span className="neon-text-magenta">{currentIndex + 1}</span>
             <span className="text-white/30 mx-1">/</span>
             <span>{total}</span>
           </span>
@@ -26,9 +25,9 @@ export default function ProgressHeader({ currentIndex }: Props) {
         <div className="progress-bar">
           <motion.div
             className="progress-fill"
-            initial={{ width: `${((currentIndex - 1) / total) * 100}%` }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            initial={{ width: '0%' }}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
           />
         </div>
       </div>

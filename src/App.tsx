@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import IntroScreen from './components/IntroScreen'
 import QuestionCard from './components/QuestionCard'
 import ResultsScreen from './components/ResultsScreen'
-import DimensionTransition from './components/DimensionTransition'
 import { calculateResults, isComplete, type SurveyResults } from './lib/scoring'
 import { STORAGE_KEY } from './data/surveyContent'
 
-type Screen = 'intro' | 'survey' | 'dimension-transition' | 'results'
+type Screen = 'intro' | 'survey' | 'results'
 
 interface SavedState {
-  screen: Screen
+  screen: string
   currentIndex: number
   answers: Record<number, number>
 }
@@ -25,7 +24,7 @@ function loadState(): SavedState | null {
   }
 }
 
-function saveState(state: SavedState) {
+function saveState(state: { screen: Screen; currentIndex: number; answers: Record<number, number> }) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
@@ -46,26 +45,33 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [results, setResults] = useState<SurveyResults | null>(null)
+  const [direction, setDirection] = useState(1)
+  const isRestoringRef = useRef(false)
 
   useEffect(() => {
     const saved = loadState()
-    if (saved) {
-      setScreen(saved.screen)
-      setCurrentIndex(saved.currentIndex)
-      setAnswers(saved.answers)
-      if (saved.screen === 'results' && isComplete(saved.answers)) {
-        setResults(calculateResults(saved.answers))
-      }
+    if (!saved) return
+    isRestoringRef.current = true
+    // Gracefully handle any legacy screen values (e.g. 'dimension-transition')
+    const restoredScreen: Screen =
+      saved.screen === 'survey' ? 'survey'
+      : saved.screen === 'results' ? 'results'
+      : 'intro'
+    setScreen(restoredScreen)
+    setCurrentIndex(saved.currentIndex)
+    setAnswers(saved.answers)
+    if (restoredScreen === 'results' && isComplete(saved.answers)) {
+      setResults(calculateResults(saved.answers))
     }
   }, [])
 
   useEffect(() => {
-    if (screen !== 'intro' || Object.keys(answers).length > 0) {
-      saveState({ screen, currentIndex, answers })
-    }
+    if (screen === 'intro' && Object.keys(answers).length === 0) return
+    saveState({ screen, currentIndex, answers })
   }, [screen, currentIndex, answers])
 
   const handleStart = () => {
+    setDirection(1)
     setScreen('survey')
     setCurrentIndex(0)
   }
@@ -75,10 +81,8 @@ export default function App() {
   }
 
   const handleNext = () => {
-    if (currentIndex === 4) {
-      // After Q5 (last Human Leadership question) → show dimension transition
-      setScreen('dimension-transition')
-    } else if (currentIndex < 9) {
+    setDirection(1)
+    if (currentIndex < 9) {
       setCurrentIndex((i) => i + 1)
     } else {
       const computed = calculateResults(answers)
@@ -87,12 +91,8 @@ export default function App() {
     }
   }
 
-  const handleDimensionContinue = () => {
-    setCurrentIndex(5)
-    setScreen('survey')
-  }
-
   const handleBack = () => {
+    setDirection(-1)
     if (currentIndex > 0) {
       setCurrentIndex((i) => i - 1)
     }
@@ -100,18 +100,11 @@ export default function App() {
 
   const handleReset = () => {
     clearState()
+    setDirection(1)
     setScreen('intro')
     setCurrentIndex(0)
     setAnswers({})
     setResults(null)
-  }
-
-  if (screen === 'dimension-transition') {
-    return (
-      <motion.div key="transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}>
-        <DimensionTransition onContinue={handleDimensionContinue} />
-      </motion.div>
-    )
   }
 
   if (screen === 'survey') {
@@ -119,6 +112,7 @@ export default function App() {
       <motion.div key="survey" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
         <QuestionCard
           currentIndex={currentIndex}
+          direction={direction}
           answers={answers}
           onAnswer={handleAnswer}
           onNext={handleNext}
