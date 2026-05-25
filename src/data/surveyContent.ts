@@ -114,7 +114,7 @@ export const dimensions: DimensionContent[] = [
   },
   {
     id: 'ai',
-    name: 'AI & Hybrid Work',
+    name: 'AI Coworker',
     subtitle: 'היכולת לשלב AI, דאטה וכלים טכנולוגיים בתוך שגרות העבודה, תהליכי קבלת החלטות ועבודת הצוות.',
     color: 'blue',
     scoreRanges: [

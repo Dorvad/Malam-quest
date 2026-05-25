@@ -43,7 +43,7 @@ export default function IntroScreen({ onStart }: Props) {
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 py-8 sm:py-12">
-        {/* Logo / brand chip */}
+        {/* Logo */}
         <motion.div
           custom={0}
           variants={fadeUp}
@@ -52,15 +52,18 @@ export default function IntroScreen({ onStart }: Props) {
           className="flex justify-center mb-6"
         >
           <div
-            className="text-xs font-semibold px-4 py-1.5 rounded-full tracking-widest uppercase"
+            className="rounded-2xl overflow-hidden"
             style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              color: 'rgba(255,255,255,0.45)',
-              letterSpacing: '0.15em',
+              background: 'white',
+              padding: '10px 20px',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
             }}
           >
-            יום מנהלים
+            <img
+              src={`${import.meta.env.BASE_URL}logo.jpg`}
+              alt="MalamTeam"
+              style={{ height: '40px', width: 'auto', display: 'block' }}
+            />
           </div>
         </motion.div>
 

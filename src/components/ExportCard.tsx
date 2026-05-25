@@ -45,16 +45,16 @@ const ExportCard = forwardRef<HTMLDivElement, Props>(({ results }, ref) => {
 
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative' }}>
-        <div style={{
-          display: 'inline-block',
-          fontSize: '11px', fontWeight: 700, letterSpacing: '0.18em',
-          color: 'rgba(255,255,255,0.35)', marginBottom: '14px',
-          padding: '4px 16px', borderRadius: '999px',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          textTransform: 'uppercase',
-        }}>
-          יום מנהלים
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{
+            display: 'inline-block',
+            background: 'white',
+            borderRadius: '12px',
+            padding: '8px 18px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+          }}>
+            <img src="/Malam-quest/logo.jpg" alt="MalamTeam" style={{ height: '36px', width: 'auto', display: 'block' }} />
+          </div>
         </div>
         <div>
           <div style={{ fontSize: '28px', fontWeight: 900, color: 'white', marginBottom: '4px' }}>
